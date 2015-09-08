@@ -9,5 +9,12 @@
   },
   "bugs": {
     "url": "https://github.com/n2liquid/teamfiles/issues"
+  },
+  "scripts": {
+    "start": "node main.js"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "multer": "^1.0.3"
   }
 }
