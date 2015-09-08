@@ -9,11 +9,17 @@ var app = express();
 var uploadsPath = 'uploads';
 var multer = require('multer');
 var upload = multer({ dest: uploadsPath });
+var key = process.env.TEAMKEY;
+
+if(!key) {
+    console.error("Missing TEAMKEY.");
+    process.exit(-1);
+}
 
 app.use(express.static(uploadsPath));
 
 function keyCheck(req, res, next) {
-    if(req.params.key !== process.env.TEAMKEY) {
+    if(req.params.key !== key) {
         res.status(403);
         res.send("Bad team key.");
         return;
