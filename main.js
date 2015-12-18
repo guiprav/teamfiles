@@ -16,6 +16,27 @@ if(!key) {
     process.exit(-1);
 }
 
+app.use(function(req, res, next) {
+    var urlPath = req.url;
+    var reResults;
+
+    if(req.method === 'POST') {
+        next();
+        return;
+    }
+
+    reResults = /^(\/[^\/]+)/.exec(urlPath);
+
+    if(!reResults) {
+        next();
+        return;
+    }
+
+    req.url = reResults[1];
+
+    next();
+});
+
 app.use(express.static(uploadsPath));
 
 function keyCheck(req, res, next) {
@@ -31,8 +52,10 @@ function keyCheck(req, res, next) {
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     var originalPath = uploadsPath + '/' + req.file.filename;
     var newPath = originalPath + extname(req.file.originalname);
+
     fs.renameSync(originalPath, newPath);
-    res.send(basename(newPath));
+
+    res.send(basename(newPath) + '/' + req.file.originalname);
 });
 
 app.listen(process.env.PORT || 3000);
