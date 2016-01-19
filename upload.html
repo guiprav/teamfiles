@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+
+<style>
+    body {
+        width: 100vw;
+        line-height: 100vh;
+
+        margin: 0;
+    }
+
+    .vCenter {
+        display: inline-block;
+
+        width: 100%;
+
+        line-height: 1rem;
+
+        text-align: center;
+    }
+
+    .hCenter {
+        width: 400px;
+
+        margin: 0 auto;
+    }
+</style>
+
+<div class="vCenter">
+    <div class="hCenter">
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="file" onchange="this.parentElement.submit()">
+        </form>
+    </div>
+</div>
