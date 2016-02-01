@@ -35,10 +35,18 @@ app.get('/upload/:key', keyCheck, function(req, res) {
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     var originalPath = uploadsPath + '/' + req.file.filename;
     var newPath = originalPath + extname(req.file.originalname);
+    var relUrl;
 
     fs.renameSync(originalPath, newPath);
 
-    res.send(basename(newPath) + '/' + req.file.originalname);
+    relUrl = '/' + basename(newPath) + '/' + req.file.originalname;
+
+    if(req.get('User-Agent').startsWith('curl/')) {
+        res.send(relUrl);
+    }
+    else {
+        res.redirect(relUrl);
+    }
 });
 
 app.use(function(req, res, next) {
