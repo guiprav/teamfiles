@@ -5,6 +5,7 @@ var readTextFileSync = require('read-text-file-sync');
 var path = require('path');
 var extname = path.extname;
 var basename = path.basename;
+var realpathSync = fs.realpathSync;
 var express = require('express');
 var app = express();
 var uploadsPath = 'uploads';
@@ -64,6 +65,20 @@ app.use(function(req, res, next) {
 
     next();
 });
+
+{
+    let mime = express.static.mime;
+
+    let originalFn = mime.lookup;
+
+    mime.lookup = function (path, fallback) {
+        if(fs.existsSync(path)) {
+            path = realpathSync(path);
+        }
+
+        return originalFn.call(this, path, fallback);
+    };
+}
 
 app.use(express.static(uploadsPath));
 
