@@ -8,9 +8,8 @@ var basename = path.basename;
 var realpathSync = fs.realpathSync;
 var express = require('express');
 var app = express();
-var uploadsPath = 'uploads';
 var multer = require('multer');
-var upload = multer({ dest: uploadsPath });
+var upload = multer({ dest: './uploads' });
 var uploadPage = readTextFileSync(__dirname + '/upload.html');
 var key = process.env.TEAMKEY;
 
@@ -34,7 +33,7 @@ app.get('/upload/:key', keyCheck, function(req, res) {
 });
 
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
-    var originalPath = uploadsPath + '/' + req.file.filename;
+    var originalPath = './uploads/' + req.file.filename;
     var newPath = originalPath + extname(req.file.originalname);
     var relUrl;
 
@@ -81,6 +80,6 @@ app.use(function(req, res, next) {
     };
 }
 
-app.use(express.static(uploadsPath));
+app.use(express.static('./uploads'));
 
 app.listen(process.env.PORT || 3000);
