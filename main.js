@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var readTextFileSync = require('read-text-file-sync');
+var mkdirp = require('mkdirp');
 var path = require('path');
 var extname = path.extname;
 var basename = path.basename;
@@ -35,10 +36,16 @@ app.get('/upload/:key', keyCheck, function(req, res) {
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     var originalPath = './uploads/' + req.file.filename;
     var newPath = originalPath + extname(req.file.originalname);
+    var newPathBaseName = basename(newPath);
+    var refDirPath = './refs/' + req.file.originalname;
+    var refPath = refDirPath + '/' + newPathBaseName;
     var relUrl;
 
     fs.renameSync(originalPath, newPath);
-    fs.symlinkSync(basename(newPath), originalPath);
+    fs.symlinkSync(newPathBaseName, originalPath);
+
+    mkdirp.sync(refDirPath);
+    fs.symlinkSync('../../uploads/' + newPathBaseName, refPath);
 
     relUrl = '/' + basename(originalPath) + '/' + req.file.originalname;
 
