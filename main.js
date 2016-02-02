@@ -39,8 +39,9 @@ app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     var relUrl;
 
     fs.renameSync(originalPath, newPath);
+    fs.symlinkSync(basename(newPath), originalPath);
 
-    relUrl = '/' + basename(newPath) + '/' + req.file.originalname;
+    relUrl = '/' + basename(originalPath) + '/' + req.file.originalname;
 
     if(req.get('User-Agent').startsWith('curl/')) {
         res.send(relUrl);
