@@ -33,6 +33,14 @@ app.get('/upload/:key', keyCheck, function(req, res) {
     res.send(uploadPage);
 });
 
+function fullUrl(req, rel) {
+    if(rel[0] === '/') {
+        rel = rel.slice(1);
+    }
+
+    return req.protocol + '://' + req.get('Host') + '/' + rel;
+}
+
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     var originalPath = './uploads/' + req.file.filename;
     var newPath = originalPath + extname(req.file.originalname);
@@ -50,7 +58,7 @@ app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
     relUrl = '/' + basename(originalPath) + '/' + req.file.originalname;
 
     if(req.get('User-Agent').startsWith('curl/')) {
-        res.send(relUrl);
+        res.send(fullUrl(req, relUrl) + '\n');
     }
     else {
         res.redirect(relUrl);
