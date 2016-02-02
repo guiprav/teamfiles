@@ -34,11 +34,13 @@ app.get('/upload/:key', keyCheck, function(req, res) {
 });
 
 function fullUrl(req, rel) {
+    let baseUrl = process.env.BASE_URL || req.protocol + '://' + req.get('Host');
+
     if(rel[0] === '/') {
         rel = rel.slice(1);
     }
 
-    return req.protocol + '://' + req.get('Host') + '/' + rel;
+    return baseUrl + '/' + rel;
 }
 
 app.post('/upload/:key', keyCheck, upload.single('file'), function(req, res) {
